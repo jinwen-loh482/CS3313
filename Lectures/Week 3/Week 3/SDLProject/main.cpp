@@ -66,7 +66,7 @@ void Initialize() {
     
     program.SetProjectionMatrix(projectionMatrix);
     program.SetViewMatrix(viewMatrix);
-    //program.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
+    // program.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
     
     glUseProgram(program.programID);
     
@@ -88,6 +88,7 @@ void ProcessInput() {
 }
 
 float lastTicks = 0.0f;
+
 
 void Update() {
     /* move right slowly */
@@ -113,7 +114,7 @@ void Render() {
     
     program.SetModelMatrix(modelMatrix);
     
-    float vertices[] = { -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0,5, -0.5, 0.5 };
+    float vertices[] = { -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5 };
     float texCoords[] = { 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0 };
     
     glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, vertices);
