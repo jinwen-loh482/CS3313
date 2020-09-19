@@ -18,12 +18,13 @@ SDL_Window* displayWindow;
 bool gameIsRunning = true;
 
 ShaderProgram program;
-glm::mat4 viewMatrix, modelMatrix, projectionMatrix;
+glm::mat4 viewMatrix, ufoMatrix, shipMatrix, projectionMatrix;
 
-float player_x = 0;
-float player_rotate = 0;
+float ship_x = 0;
+float ufo_rotate = 0;
 
-GLuint playerTextureID;
+GLuint ufoTextureID;
+GLuint shipTextureID;
 
 GLuint LoadTexture(const char* filePath) {
     int w, h, n;
@@ -61,12 +62,12 @@ void Initialize() {
     program.Load("shaders/vertex_textured.glsl", "shaders/fragment_textured.glsl");
     
     viewMatrix = glm::mat4(1.0f);
-    modelMatrix = glm::mat4(1.0f);
+    ufoMatrix = glm::mat4(1.0f);
+    shipMatrix = glm::mat4(1.0f);
     projectionMatrix = glm::ortho(-5.0f, 5.0f, -3.75f, 3.75f, -1.0f, 1.0f);
     
     program.SetProjectionMatrix(projectionMatrix);
     program.SetViewMatrix(viewMatrix);
-    //program.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
     
     glUseProgram(program.programID);
     
@@ -75,7 +76,8 @@ void Initialize() {
     
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
-    playerTextureID = LoadTexture("ctg.png");
+    ufoTextureID = LoadTexture("ufoGreen.png");
+    shipTextureID = LoadTexture("playerShip1_red.png");
 }
 
 void ProcessInput() {
@@ -89,6 +91,7 @@ void ProcessInput() {
 
 float lastTicks = 0.0f;
 
+
 void Update() {
     /* move right slowly */
     // modelMatrix = glm::translate(modelMatrix, glm::vec3(0.01f, 0.0f, 0.0f));
@@ -100,28 +103,45 @@ void Update() {
     float deltaTime = ticks - lastTicks;
     lastTicks = ticks;
     
-    player_x += 1.0f * deltaTime;
-    player_rotate += 90.0f * deltaTime;
+    ufo_rotate += 45.0f * deltaTime;
+    ship_x += 1 * deltaTime;
     
-    modelMatrix = glm::mat4(1.0f);
-    modelMatrix = glm::translate(modelMatrix, glm::vec3(player_x, 0, 0));
-    modelMatrix = glm::rotate(modelMatrix, glm::radians(player_rotate), glm::vec3(0.0f, 0.0f, 1.0f));
+    ufoMatrix = glm::mat4(1.0f);
+    ufoMatrix = glm::rotate(ufoMatrix, glm::radians(ufo_rotate), glm::vec3(0.0f, 0.0f, 1.0f));
+    shipMatrix = glm::mat4(1.0f);
+    shipMatrix = glm::translate(shipMatrix, glm::vec3(ship_x, 0.0f, 0.0f));
 }
 
 void Render() {
     glClear(GL_COLOR_BUFFER_BIT);
     
-    program.SetModelMatrix(modelMatrix);
+    program.SetModelMatrix(ufoMatrix);
     
-    float vertices[] = { -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0,5, -0.5, 0.5 };
-    float texCoords[] = { 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0 };
+    float ufoVertices[] = { -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5 };
+    float ufoTexCoords[] = { 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0 };
     
-    glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, vertices);
+    float shipVertices[] = { -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5 };
+    float shipTexCoords[] = { 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0 };
+    
+    glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, ufoVertices);
     glEnableVertexAttribArray(program.positionAttribute);
-    glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords);
+    glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, ufoTexCoords);
     glEnableVertexAttribArray(program.texCoordAttribute);
     
-    glBindTexture(GL_TEXTURE_2D, playerTextureID);
+    glBindTexture(GL_TEXTURE_2D, ufoTextureID);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    
+    glDisableVertexAttribArray(program.positionAttribute);
+    glDisableVertexAttribArray(program.texCoordAttribute);
+    
+    program.SetModelMatrix(shipMatrix);
+    
+    glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, shipVertices);
+    glEnableVertexAttribArray(program.positionAttribute);
+    glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, shipTexCoords);
+    glEnableVertexAttribArray(program.texCoordAttribute);
+    
+    glBindTexture(GL_TEXTURE_2D, shipTextureID);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     
     glDisableVertexAttribArray(program.positionAttribute);
