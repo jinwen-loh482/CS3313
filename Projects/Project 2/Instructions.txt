@@ -1,0 +1,11 @@
+Instructions
+
+JinWen Loh's (jwl482) Project 2 Submission - CS3313 Fall 2020
+
+Press Space to start
+
+Player 1:
+A and D keys to control left paddle. A goes up, D goes down.
+
+Player 2:
+Left and Right arrow keys to control right paddle. Left goes up, Right goes down.
