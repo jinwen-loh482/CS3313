@@ -42,7 +42,7 @@ void Entity::CheckCollisionsY(Entity *objects, int objectCount) {
                 collidedTop = true;
             } else if (velocity.y < 0) {
                 collidedBottom = true;
-            }
+            } else collidedTop = true;
             velocity = glm::vec3(0);        }
     }
 }

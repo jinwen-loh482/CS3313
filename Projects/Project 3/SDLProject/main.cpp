@@ -1,4 +1,7 @@
 #define GL_SILENCE_DEPRECATION
+#include <iostream>
+#include <vector>
+#include <string>
 
 #ifdef _WINDOWS
 #include <GL/glew.h>
@@ -39,6 +42,8 @@ float accumulator = 0;
 ShaderProgram program;
 glm::mat4 viewMatrix, projectionMatrix;
 
+GLuint fontTextureID;
+
 Entity player;
 Entity tiles[TOTAL_TILES];
 
@@ -61,6 +66,57 @@ GLuint LoadTexture(const char* filePath) {
     
     stbi_image_free(image);
     return textureID;
+}
+
+void DrawText(ShaderProgram *program, GLuint fontTextureID, std::string text, float size, float spacing, glm::vec3 position) {
+    float width = 1.0f/16.0f;
+    float height = 1.0f/16.0f;
+    
+    std::vector<float> vertices;
+    std::vector<float> texCoords;
+    
+    for (int i = 0; i < text.size(); ++i) {
+        int index = (int)text[i];
+        float offset = (size+spacing)*i;
+        
+        float u = (float)(index % 16) / 16.0f;
+        float v = (float)(index / 16) / 16.0f;
+        vertices.insert(vertices.end(), {
+            offset + (-0.5f * size), 0.5f * size,
+            offset + (-0.5f * size), -0.5f * size,
+            offset + (0.5f * size), 0.5f * size,
+            offset + (0.5f * size), -0.5f * size,
+            offset + (0.5f * size), 0.5f * size,
+            offset + (-0.5f * size), -0.5f * size
+        });
+        
+        texCoords.insert(texCoords.end(), {
+            u, v,
+            u, v + height,
+            u + width, v,
+            u + width, v + height,
+            u + width, v,
+            u, v + height
+        });
+    } // End of for
+    
+    glm::mat4 modelMatrix = glm::mat4(1.0f);
+    modelMatrix = glm::translate(modelMatrix, position);
+    program->SetModelMatrix(modelMatrix);
+    
+    glUseProgram(program->programID);
+    
+    glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertices.data());
+    glEnableVertexAttribArray(program->positionAttribute);
+    
+    glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords.data());
+    glEnableVertexAttribArray(program->texCoordAttribute);
+    
+    glBindTexture(GL_TEXTURE_2D, fontTextureID);
+    glDrawArrays(GL_TRIANGLES, 0, (int)(text.size() * 6));
+    
+    glDisableVertexAttribArray(program->positionAttribute);
+    glDisableVertexAttribArray(program->texCoordAttribute);
 }
 
 void Initialize() {
@@ -92,6 +148,9 @@ void Initialize() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     // Set up game objects
+    // Font
+    fontTextureID = LoadTexture("assets/font1.png");
+    
     // Player
     player.position = glm::vec3(0, 3, 0);
     player.width = 0.5;
@@ -171,15 +230,17 @@ void Update() {
         accumulator = deltaTime;
         return;
     }
-    if (player.collidedBottom && tiles[WINNING_TILE].collidedTop) gameState = GAME_WON;
+    if (player.collidedTop && tiles[WINNING_TILE].collidedTop) gameState = GAME_WON;
     else if (player.collidedTop || player.collidedBottom || player.collidedLeft || player.collidedRight) {
         gameState = GAME_LOST;
         player.acceleration = glm::vec3(0);
     }
     
     while (deltaTime >= FIXED_TIMESTEP) {
-        player.Update(FIXED_TIMESTEP, tiles, TOTAL_TILES);
-        tiles[WINNING_TILE].Update(FIXED_TIMESTEP, &player, 1);
+        if (gameState == IN_PROGRESS) {
+            player.Update(FIXED_TIMESTEP, tiles, TOTAL_TILES);
+            tiles[WINNING_TILE].Update(FIXED_TIMESTEP, &player, 1);
+        }
         deltaTime -= FIXED_TIMESTEP;
     }
     accumulator = deltaTime;
@@ -190,6 +251,15 @@ void Render() {
     
     for (int i=0; i < TOTAL_TILES; ++i) { tiles[i].Render(&program); }
     player.Render(&program);
+    
+    if (gameState == NOT_STARTED) {
+        DrawText(&program, fontTextureID, "Press SPACE to begin!", 0.5, -0.25f, glm::vec3(-2.5,0,0));
+    } else if (gameState == GAME_LOST) {
+        DrawText(&program, fontTextureID, "Mission Failed!", 0.5, -0.25f, glm::vec3(-4.25f,3,0));
+    } else if (gameState == GAME_WON) {
+        DrawText(&program, fontTextureID, "Mission Successful!", 0.5, -0.25f, glm::vec3(-4.25f,3,0));
+    }
+
     
     SDL_GL_SwapWindow(displayWindow);
 }
