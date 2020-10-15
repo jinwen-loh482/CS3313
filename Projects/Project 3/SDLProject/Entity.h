@@ -11,9 +11,6 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "ShaderProgram.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
 class Entity {
 public:
     Entity();

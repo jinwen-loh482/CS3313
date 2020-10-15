@@ -17,13 +17,18 @@
 #include "Entity.h"
 
 #define FIXED_TIMESTEP 0.01666666666
+#define BOTTOM_TILE_NUMBER 10
 
 SDL_Window* displayWindow;
 bool gameIsRunning = true;
 float lastTicks = 0;
+float accumulator = 0;
 
 ShaderProgram program;
 glm::mat4 viewMatrix, projectionMatrix;
+
+Entity player;
+Entity bottomTiles[10];
 
 GLuint LoadTexture(const char* filePath) {
     int w, h, n;
@@ -74,7 +79,27 @@ void Initialize() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
-    playerTextureID = LoadTexture("assets/playerShip3_red.png");
+    // Set up game objects
+    // Player
+    player.acceleration.y = -0.3;
+    player.position = glm::vec3(0, 3, 0);
+    float playerVertices[] = { -0.25, -0.25, 0.25, -0.25, 0.25, 0.25,
+        -0.25, -0.25, 0.25, 0.25, -0.25, 0.25 };
+    player.setVertices(playerVertices);
+    player.textureID = LoadTexture("assets/playerShip3_red.png");
+    
+    // Tiles
+    float x_tile_pos = -5;
+    float y_tile_pos = -3.75;
+    for (int i = 0; i < BOTTOM_TILE_NUMBER; ++i) {
+        if (i == 7)
+            bottomTiles[i].textureID = LoadTexture("assets/platformPack_tile008.png");
+        else
+            bottomTiles[i].textureID = LoadTexture("assets/platformPack_tile016.png");
+        bottomTiles[i].position = glm::vec3(x_tile_pos+0.5, y_tile_pos+0.5, 0);
+        x_tile_pos += 1;
+        bottomTiles[i].Update(FIXED_TIMESTEP);
+    }
 }
 
 void ProcessInput() {
@@ -90,14 +115,27 @@ void ProcessInput() {
 }
 
 void Update() {
-    float ticks = (float)SDL_GetTicks() / 1000;
+    float ticks = (float)SDL_GetTicks() / 1000.0f;
     float deltaTime = ticks - lastTicks;
     lastTicks = ticks;
+    deltaTime += accumulator;
+    if (deltaTime < FIXED_TIMESTEP) {
+        accumulator = deltaTime;
+        return;
+    }
     
+    while (deltaTime >= FIXED_TIMESTEP) {
+        player.Update(FIXED_TIMESTEP);
+        deltaTime -= FIXED_TIMESTEP;
+    }
+    accumulator = deltaTime;
 }
 
 void Render() {
     glClear(GL_COLOR_BUFFER_BIT);
+    
+    for (int i=0; i < BOTTOM_TILE_NUMBER; ++i) { bottomTiles[i].Render(&program); }
+    player.Render(&program);
     
     SDL_GL_SwapWindow(displayWindow);
 }
