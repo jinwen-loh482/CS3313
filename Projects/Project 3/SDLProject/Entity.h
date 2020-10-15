@@ -16,10 +16,16 @@ public:
     Entity();
     void setVertices(float vertices[]);
     void setTexCoords(float texCoords[]);
-    void Update(float deltaTime);
+    void Update(float deltaTime, Entity* objects, int tileCount);
     void Render(ShaderProgram *program);
     
+    bool CheckCollision(Entity *other);
+    void CheckCollisionsX(Entity *objects, int objectCount);
+    void CheckCollisionsY(Entity *objects, int objectCount);
+    
     glm::mat4 modelMatrix;
+    float width = 1;
+    float height = 1;
     
     glm::vec3 position;
     glm::vec3 velocity;
@@ -29,6 +35,11 @@ public:
         -0.5, -0.5, 0.5, 0.5, -0.5, 0.5 };
     float texCoords[12] = { 0.0, 1.0, 1.0, 1.0, 1.0, 0.0,
         0.0, 1.0, 1.0, 0.0, 0.0, 0.0 };
+    
+    bool collidedTop = false;
+    bool collidedBottom = false;
+    bool collidedLeft = false;
+    bool collidedRight = false;
     
     GLuint textureID;
 };
