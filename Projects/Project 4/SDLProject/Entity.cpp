@@ -11,11 +11,13 @@ void Entity::setTexCoords(float texCoords[12]) {
 }
 
 bool Entity::CheckCollision(Entity *other) {
+    // Entity collision
     float xdist = fabs(position.x - other->position.x) - ((width + other->width) / 2.0f);
     float ydist = fabs(position.y - other->position.y) - ((height + other->height) / 2.0f);
     
-    if (xdist <= 0 && ydist <= 0) {
-        // travelling left
+    if (xdist < 0 && ydist < 0) {
+        // Penetration correction
+        // travelling right
         if (velocity.x > 0)
             position.x -= fabs(xdist);
         if (velocity.x < 0)
@@ -30,7 +32,40 @@ bool Entity::CheckCollision(Entity *other) {
     return false;
 }
 
+bool Entity::CheckScreenCollision() {
+    float left = position.x-width/2;
+    float right = position.x+width/2;
+    float up = position.y+height/2;
+    float down = position.y-height/2;
+    
+    if (left < -5) {
+        position.x += fabs(-5-left);
+        return true;
+    }
+    if (right > 5) {
+        position.x -= fabs(5-right);
+        return true;
+    }
+    if (up > 3.75) {
+        position.y -= fabs(3.75-up);
+        return true;
+    }
+    if (down < -3.75) {
+        position.y += fabs(-3.75-down);
+        return true;
+    }
+    return false;
+}
+
 void Entity::CheckCollisionsX(Entity *objects, int objectCount) {
+    if (CheckScreenCollision()) {
+        if (velocity.x > 0) {
+            collidedRight = true;
+        } else if (velocity.x < 0) {
+            collidedLeft = true;
+        }
+        velocity.x = 0;
+    }
     for (int i = 0; i < objectCount; ++i) {
         Entity *object = &objects[i];
         
@@ -46,6 +81,14 @@ void Entity::CheckCollisionsX(Entity *objects, int objectCount) {
 }
 
 void Entity::CheckCollisionsY(Entity *objects, int objectCount) {
+    if (CheckScreenCollision()) {
+        if (velocity.y > 0) {
+            collidedTop = true;
+        } else if (velocity.y < 0) {
+            collidedBottom = true;
+        }
+        velocity.y = 0;
+    }
     for (int i = 0; i < objectCount; ++i) {
         Entity *object = &objects[i];
         
@@ -54,18 +97,19 @@ void Entity::CheckCollisionsY(Entity *objects, int objectCount) {
                 collidedTop = true;
             } else if (velocity.y < 0) {
                 collidedBottom = true;
-            } else collidedTop = true;
-            velocity.y = 0;        }
+            }
+            velocity.y = 0;
+        }
     }
 }
 
 void Entity::Update(float deltaTime, Entity* objects, int tileCount) {
     velocity += deltaTime * acceleration;
     position += deltaTime * velocity;
-    modelMatrix = glm::mat4(1);
-    modelMatrix = glm::translate(modelMatrix, position);
     CheckCollisionsX(objects, tileCount);
     CheckCollisionsY(objects, tileCount);
+    modelMatrix = glm::mat4(1);
+    modelMatrix = glm::translate(modelMatrix, position);
 }
 
 void Entity::Render(ShaderProgram *program) {

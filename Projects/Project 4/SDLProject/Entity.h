@@ -24,6 +24,7 @@ public:
     void Render(ShaderProgram *program);
     
     bool CheckCollision(Entity *other);
+    bool CheckScreenCollision();
     void CheckCollisionsX(Entity *objects, int objectCount);
     void CheckCollisionsY(Entity *objects, int objectCount);
     

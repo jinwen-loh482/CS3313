@@ -28,6 +28,8 @@
 
 #define TOTAL_PLATFORMS 10
 
+// TODO:
+// Game Start mechanism
 
 SDL_Window* displayWindow;
 bool gameIsRunning = true;
@@ -165,9 +167,9 @@ void Initialize() {
     playerTextureID = LoadTexture("assets/platformChar_idle.png");
     player.entityType = PLAYER;
     player.textureID = playerTextureID;
-    player.position = glm::vec3(-4.25, -3.25, 0);
+    player.position = glm::vec3(-4, -2.25, 0);
     player.acceleration = glm::vec3(0, -2, 0);
-    player.Update(0, NULL, 0);
+    player.Update(0, platforms, TOTAL_PLATFORMS);
 }
 
 void ProcessInput() {
@@ -192,21 +194,26 @@ void ProcessInput() {
 }
 
 void Update() {
-    float ticks = (float)SDL_GetTicks() / 1000.0f;
-    float deltaTime = ticks - lastTicks;
-    lastTicks = ticks;
-    deltaTime += accumulator;
-    if (deltaTime < FIXED_TIMESTEP) {
+    if (gameState == IN_PROGRESS) {
+        float ticks = (float)SDL_GetTicks() / 1000.0f;
+        float deltaTime = ticks - lastTicks;
+        lastTicks = ticks;
+        deltaTime += accumulator;
+        if (deltaTime < FIXED_TIMESTEP) {
+            accumulator = deltaTime;
+            return;
+        }
+        player.Update(FIXED_TIMESTEP, platforms, TOTAL_PLATFORMS);
+        deltaTime -= FIXED_TIMESTEP;
         accumulator = deltaTime;
-        return;
     }
-    player.Update(FIXED_TIMESTEP, platforms, TOTAL_PLATFORMS);
-    deltaTime -= FIXED_TIMESTEP;
-    accumulator = deltaTime;
 }
 
 void Render() {
     glClear(GL_COLOR_BUFFER_BIT);
+    if (gameState == NOT_STARTED) {
+        DrawText(&program, fontTextureID, "Press SPACE to begin!", 0.5f, -.25f, glm::vec3(-2.5,0,0));
+    }
     for (int i = 0; i < TOTAL_PLATFORMS; ++i)
         platforms[i].Render(&program);
     player.Render(&program);
