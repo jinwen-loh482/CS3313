@@ -657,14 +657,14 @@ namespace glm
 			scalar.x - v.z);
 	}
 
-	template<typename T, qualifier Q>
-	GLM_FUNC_QUALIFIER GLM_CONSTEXPR vec<3, T, Q> operator-(vec<3, T, Q> const& v1, vec<3, T, Q> const& v2)
-	{
-		return vec<3, T, Q>(
-			v1.x - v2.x,
-			v1.y - v2.y,
-			v1.z - v2.z);
-	}
+    template<typename T, qualifier Q>
+    GLM_FUNC_QUALIFIER GLM_CONSTEXPR vec<3, T, Q> operator-(vec<3, T, Q> const& v1, vec<3, T, Q> const& v2)
+    {
+        return vec<3, T, Q>(
+            v1.x - v2.x,
+            v1.y - v2.y,
+            v1.z - v2.z);
+    }
 
 	template<typename T, qualifier Q>
 	GLM_FUNC_QUALIFIER GLM_CONSTEXPR vec<3, T, Q> operator*(vec<3, T, Q> const& v, T scalar)

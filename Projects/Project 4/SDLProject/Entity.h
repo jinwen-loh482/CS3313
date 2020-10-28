@@ -11,7 +11,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "ShaderProgram.h"
 
-enum EntityType { PLAYER, PLATFORM, AI };
+enum EntityType { PLAYER, PLATFORM, ENEMY };
 enum AIType { DETECTOR, PATROL, TIMED };
 enum AIState { IDLE, ACTIVE };
 
@@ -20,9 +20,13 @@ public:
     Entity();
     void setVertices(float vertices[]);
     void setTexCoords(float texCoords[]);
-    void Update(float deltaTime, Entity* objects, int tileCount);
+    void Update(float deltaTime, Entity *player, Entity* objects, int tileCount);
     void Render(ShaderProgram *program);
     
+    void AI(Entity *player);
+    void Detector(Entity *player);
+    
+    void ResetCollisionFlags();
     bool CheckCollision(Entity *other);
     bool CheckScreenCollision();
     void CheckCollisionsX(Entity *objects, int objectCount);
@@ -49,6 +53,8 @@ public:
     bool collidedBottom = false;
     bool collidedLeft = false;
     bool collidedRight = false;
+    
+    bool isActive = 1;
     
     GLuint textureID;
 };

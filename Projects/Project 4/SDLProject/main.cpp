@@ -27,9 +27,14 @@
 #define NOT_STARTED 3
 
 #define TOTAL_PLATFORMS 10
+#define TOTAL_AI 3
 
+#define GRAVITY -9.81
+#define MOVE_SPEED 2
+#define AI_MOVE_SPEED 1
+#define JUMP_SPEED 5.5
 // TODO:
-// Game Start mechanism
+
 
 SDL_Window* displayWindow;
 bool gameIsRunning = true;
@@ -43,9 +48,11 @@ glm::mat4 viewMatrix, projectionMatrix;
 
 GLuint fontTextureID;
 GLuint platformTextureID;
+GLuint aiTextureID;
 GLuint playerTextureID;
 
 Entity player;
+Entity AIs[TOTAL_AI];
 Entity platforms[TOTAL_PLATFORMS];
 
 GLuint LoadTexture(const char* filePath) {
@@ -152,6 +159,14 @@ void Initialize() {
     // Font
     fontTextureID = LoadTexture("assets/font1.png");
     
+    // Player
+    playerTextureID = LoadTexture("assets/platformChar_idle.png");
+    player.entityType = PLAYER;
+    player.textureID = playerTextureID;
+    player.position = glm::vec3(-4, 3.25, 0);
+    player.acceleration = glm::vec3(0, GRAVITY, 0);
+    player.Update(0, NULL, platforms, TOTAL_PLATFORMS);
+    
     // Platforms
     glm::vec3 initPosition = {-4.5, -3.25, 0};
     platformTextureID = LoadTexture("assets/platformPack_tile001.png");
@@ -159,17 +174,32 @@ void Initialize() {
         platforms[i].entityType = PLATFORM;
         platforms[i].textureID = platformTextureID;
         platforms[i].position = initPosition;
-        platforms[i].Update(0, NULL, 0);
+        platforms[i].Update(0, NULL, NULL, 0);
         initPosition.x += 1;
     }
     
-    // Player
-    playerTextureID = LoadTexture("assets/platformChar_idle.png");
-    player.entityType = PLAYER;
-    player.textureID = playerTextureID;
-    player.position = glm::vec3(-4, -2.25, 0);
-    player.acceleration = glm::vec3(0, -2, 0);
-    player.Update(0, platforms, TOTAL_PLATFORMS);
+    // AIs
+    aiTextureID = LoadTexture("assets/ctg.png");
+    for (int i = 0; i < TOTAL_AI; ++i) {
+        switch(i) {
+            case(0):
+                AIs[i].aiType = DETECTOR;
+                AIs[i].position = glm::vec3(4, 3.25, 0);
+                break;
+            case(1):
+                AIs[i].aiType = TIMED;
+                AIs[i].position = glm::vec3(2, 3.25, 0);
+                break;
+            case(2):
+                AIs[i].aiType = PATROL;
+                AIs[i].position = glm::vec3(0, 3.25, 0);
+        }
+        AIs[i].entityType = ENEMY;
+        AIs[i].aiState = IDLE;
+        AIs[i].textureID = aiTextureID;
+        AIs[i].acceleration = glm::vec3(0, GRAVITY, 0);
+        AIs[i].Update(0, &player, platforms, TOTAL_PLATFORMS);
+    }
 }
 
 void ProcessInput() {
@@ -191,6 +221,20 @@ void ProcessInput() {
                 break;
         }
     }
+    
+    const Uint8 *keys = SDL_GetKeyboardState(NULL);
+           
+    if (gameState == IN_PROGRESS) {
+        if (keys[SDL_SCANCODE_A]) {
+            player.velocity.x = -MOVE_SPEED;
+        }
+        else if (keys[SDL_SCANCODE_D]) {
+            player.velocity.x = MOVE_SPEED;
+        } else player.velocity.x = 0;
+        if (keys[SDL_SCANCODE_SPACE]) {
+            if (player.collidedBottom) player.velocity.y = JUMP_SPEED;
+        }
+    }
 }
 
 void Update() {
@@ -203,7 +247,9 @@ void Update() {
             accumulator = deltaTime;
             return;
         }
-        player.Update(FIXED_TIMESTEP, platforms, TOTAL_PLATFORMS);
+        player.Update(FIXED_TIMESTEP, NULL, platforms, TOTAL_PLATFORMS);
+        for (int i = 0; i < TOTAL_AI; ++i)
+            AIs[i].Update(FIXED_TIMESTEP, &player, platforms, TOTAL_PLATFORMS);
         deltaTime -= FIXED_TIMESTEP;
         accumulator = deltaTime;
     }
@@ -216,6 +262,8 @@ void Render() {
     }
     for (int i = 0; i < TOTAL_PLATFORMS; ++i)
         platforms[i].Render(&program);
+    for (int i = 0; i < TOTAL_AI; ++i)
+        AIs[i].Render(&program);
     player.Render(&program);
     SDL_GL_SwapWindow(displayWindow);
 }
