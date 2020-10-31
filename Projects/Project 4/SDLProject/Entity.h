@@ -23,9 +23,11 @@ public:
     void Update(float deltaTime, Entity *player, Entity* objects, int tileCount);
     void Render(ShaderProgram *program);
     
-    void AI(Entity *player);
+    void AI(Entity *player, float deltaTime);
     void Detector(Entity *player);
+    void Timed(Entity *player, float deltaTime);
     
+    bool DetectGap(float deltaTime, Entity* objects, int tileCount);
     void ResetCollisionFlags();
     bool CheckCollision(Entity *other);
     bool CheckScreenCollision();
@@ -48,6 +50,7 @@ public:
     EntityType entityType;
     AIType aiType;
     AIState aiState;
+    float accumulator = 0;
     
     bool collidedTop = false;
     bool collidedBottom = false;

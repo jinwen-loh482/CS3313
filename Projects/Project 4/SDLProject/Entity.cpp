@@ -18,11 +18,13 @@ void Entity::ResetCollisionFlags() {
 }
 
 bool Entity::CheckCollision(Entity *other) {
-    // Entity collision
-    float xdist = fabs(position.x - other->position.x) - ((width + other->width) / 2.0f);
-    float ydist = fabs(position.y - other->position.y) - ((height + other->height) / 2.0f);
-    
-    if (xdist < 0 && ydist < 0) return true;
+    if (other != this && other->isActive) {
+        // Entity collision
+        float xdist = fabs(position.x - other->position.x) - ((width + other->width) / 2.0f);
+        float ydist = fabs(position.y - other->position.y) - ((height + other->height) / 2.0f);
+        
+        if (xdist < 0 && ydist < 0) return true;
+    }
     return false;
 }
 
@@ -50,25 +52,35 @@ void Entity::CheckCollisionsX(Entity *objects, int objectCount) {
                 collidedLeft = true;
             }
             velocity.x = 0;
+            if (entityType == PLAYER && object->entityType == ENEMY)
+                isActive = false;
         }
     }
     if (CheckScreenCollision()) {
         float left = position.x-width/2;
         float right = position.x+width/2;
         if (left < -5) {
+            collidedLeft = true;
             position.x += fabs(-5-left);
         }
         else if (right > 5) {
+            collidedRight = true;
             position.x -= fabs(5-right);
         }
-        velocity.x = 0;
+        switch(entityType) {
+            case ENEMY:
+                velocity.x *= -1;
+                break;
+            default:
+                velocity.x = 0;
+                break;
+        }
     }
 }
 
 void Entity::CheckCollisionsY(Entity *objects, int objectCount) {
     for (int i = 0; i < objectCount; ++i) {
         Entity *object = &objects[i];
-        
         if (CheckCollision(object)) {
             float ydist = fabs(position.y - object->position.y);
             float penetrationY = fabs(ydist - (height / 2.0f) - object->height / 2.0f);
@@ -80,6 +92,8 @@ void Entity::CheckCollisionsY(Entity *objects, int objectCount) {
                 collidedBottom = true;
             }
             velocity.y = 0;
+            if (entityType == PLAYER && object->entityType == ENEMY)
+                object->isActive = false;
         }
     }
     if (CheckScreenCollision()) {
@@ -100,21 +114,39 @@ void Entity::CheckCollisionsY(Entity *objects, int objectCount) {
 void Entity::Detector(Entity *player) {
     switch(aiState) {
         case IDLE:
-            if (player->position.x < position.x)
-                velocity = glm::vec3(-1, 0, 0);
-            else
-                velocity = glm::vec3(1, 0, 0);
-            break;
+            if (glm::distance(position, player->position) < 5) {
+                aiState = ACTIVE;
+            } break;
         case ACTIVE:
-            if (player->position.x < position.x)
-                velocity = glm::vec3(-1, 0, 0);
-            else
-                velocity = glm::vec3(1, 0, 0);
+            if (glm::length(velocity) == 0)
+                velocity.x = -2;
             break;
     }
 }
 
-void Entity::AI(Entity* player) {
+// Wait 5 seconds then move
+void Entity::Timed(Entity *player, float deltaTime) {
+    switch(aiState) {
+        case IDLE:
+            if (accumulator < 5) {
+                accumulator += deltaTime;
+            } else {
+                velocity.x = -1;
+                accumulator = 0;
+                aiState = ACTIVE;
+            } break;
+        case ACTIVE:
+            if (accumulator < 2.5)
+                accumulator += deltaTime;
+            else {
+                velocity.x = 0;
+                accumulator = 0;
+                aiState = IDLE;
+            } break;
+    }
+}
+
+void Entity::AI(Entity* player, float deltaTime) {
     switch(aiType) {
         case DETECTOR: {
             Detector(player);
@@ -124,6 +156,7 @@ void Entity::AI(Entity* player) {
             break;
         }
         case TIMED: {
+            Timed(player, deltaTime);
             break;
         }
     }
@@ -134,34 +167,56 @@ void Entity::Update(float deltaTime, Entity *player, Entity* objects, int tileCo
     ResetCollisionFlags();
     
     if (entityType == ENEMY) {
-        AI(player);
+        AI(player, deltaTime);
+        if (DetectGap(deltaTime, objects, tileCount)) {
+            velocity.x *= -1;
+        }
     }
     
     velocity += deltaTime * acceleration;
     
-    position.y += deltaTime * velocity.y;
-    CheckCollisionsY(objects, tileCount);
-    
     position.x += deltaTime * velocity.x;
     CheckCollisionsX(objects, tileCount);
+    
+    position.y += deltaTime * velocity.y;
+    CheckCollisionsY(objects, tileCount);
     
     modelMatrix = glm::mat4(1);
     modelMatrix = glm::translate(modelMatrix, position);
 }
 
+bool Entity::DetectGap(float deltaTime, Entity* objects, int tileCount) {
+    Entity ghost = *this;
+    ghost.velocity += deltaTime * ghost.acceleration;
+    
+    if (ghost.velocity.x > 0)
+        ghost.position.x += deltaTime * ghost.velocity.x + ghost.width;
+    else if (ghost.velocity.x < 0)
+        ghost.position.x += deltaTime * ghost.velocity.x - ghost.width;
+    ghost.CheckCollisionsX(objects, tileCount);
+    
+    ghost.position.y += deltaTime * ghost.velocity.y;
+    ghost.CheckCollisionsY(objects, tileCount);
+    
+    return !(ghost.collidedBottom);
+}
+
+
 void Entity::Render(ShaderProgram *program) {
-    program->SetModelMatrix(modelMatrix);
-    
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    if (isActive) {
+        program->SetModelMatrix(modelMatrix);
         
-    glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertices);
-    glEnableVertexAttribArray(program->positionAttribute);
-    
-    glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords);
-    glEnableVertexAttribArray(program->texCoordAttribute);
-    
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    
-    glDisableVertexAttribArray(program->positionAttribute);
-    glDisableVertexAttribArray(program->texCoordAttribute);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+            
+        glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertices);
+        glEnableVertexAttribArray(program->positionAttribute);
+        
+        glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords);
+        glEnableVertexAttribArray(program->texCoordAttribute);
+        
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        
+        glDisableVertexAttribArray(program->positionAttribute);
+        glDisableVertexAttribArray(program->texCoordAttribute);
+    }
 }
