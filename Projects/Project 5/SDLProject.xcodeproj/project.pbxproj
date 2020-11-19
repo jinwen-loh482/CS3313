@@ -8,9 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		3CD87FA82565DDE7005499DD /* Assets in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3CD87FA72565DDE7005499DD /* Assets */; };
-		3CD87FAF2565DFA1005499DD /* Library in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3CD87FAE2565DFA1005499DD /* Library */; };
-		3CD881372565E0BE005499DD /* glm in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3CD881362565E0BE005499DD /* glm */; };
 		3CD881422565E0EA005499DD /* shaders in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3CD881412565E0EA005499DD /* shaders */; };
+		3CD881592565E2B1005499DD /* Util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CD8814C2565E2B0005499DD /* Util.cpp */; };
+		3CD8815A2565E2B1005499DD /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CD8814E2565E2B0005499DD /* Scene.cpp */; };
+		3CD8815B2565E2B1005499DD /* Map.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CD8814F2565E2B0005499DD /* Map.cpp */; };
+		3CD8815C2565E2B1005499DD /* Level2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CD881512565E2B0005499DD /* Level2.cpp */; };
+		3CD8815D2565E2B1005499DD /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CD881542565E2B0005499DD /* Entity.cpp */; };
+		3CD8815E2565E2B1005499DD /* Level1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CD881552565E2B0005499DD /* Level1.cpp */; };
+		3CD881602565E2B1005499DD /* ShaderProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CD881582565E2B1005499DD /* ShaderProgram.cpp */; };
+		3CD8816B2565E989005499DD /* Level0.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CD881692565E989005499DD /* Level0.cpp */; };
+		3CD8817025663516005499DD /* Level3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CD8816E25663516005499DD /* Level3.cpp */; };
 		DBDF1B532323DE3F007CECB1 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DBDF1B522323DE3F007CECB1 /* main.cpp */; };
 		DBDF1B632323DEDA007CECB1 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBDF1B622323DEDA007CECB1 /* OpenGL.framework */; };
 		DBDF1B652323DEDF007CECB1 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBDF1B642323DEDF007CECB1 /* Cocoa.framework */; };
@@ -27,9 +34,7 @@
 			dstSubfolderSpec = 6;
 			files = (
 				3CD87FA82565DDE7005499DD /* Assets in CopyFiles */,
-				3CD87FAF2565DFA1005499DD /* Library in CopyFiles */,
 				3CD881422565E0EA005499DD /* shaders in CopyFiles */,
-				3CD881372565E0BE005499DD /* glm in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -37,9 +42,27 @@
 
 /* Begin PBXFileReference section */
 		3CD87FA72565DDE7005499DD /* Assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Assets; sourceTree = "<group>"; };
-		3CD87FAE2565DFA1005499DD /* Library */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Library; sourceTree = "<group>"; };
 		3CD881362565E0BE005499DD /* glm */ = {isa = PBXFileReference; lastKnownFileType = folder; path = glm; sourceTree = "<group>"; };
 		3CD881412565E0EA005499DD /* shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; path = shaders; sourceTree = "<group>"; };
+		3CD881492565E2B0005499DD /* Entity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Entity.h; sourceTree = "<group>"; };
+		3CD8814A2565E2B0005499DD /* Scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scene.h; sourceTree = "<group>"; };
+		3CD8814B2565E2B0005499DD /* ShaderProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderProgram.h; sourceTree = "<group>"; };
+		3CD8814C2565E2B0005499DD /* Util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Util.cpp; sourceTree = "<group>"; };
+		3CD8814D2565E2B0005499DD /* Level1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level1.h; sourceTree = "<group>"; };
+		3CD8814E2565E2B0005499DD /* Scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Scene.cpp; sourceTree = "<group>"; };
+		3CD8814F2565E2B0005499DD /* Map.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Map.cpp; sourceTree = "<group>"; };
+		3CD881502565E2B0005499DD /* Level2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level2.h; sourceTree = "<group>"; };
+		3CD881512565E2B0005499DD /* Level2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Level2.cpp; sourceTree = "<group>"; };
+		3CD881522565E2B0005499DD /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
+		3CD881532565E2B0005499DD /* Map.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Map.h; sourceTree = "<group>"; };
+		3CD881542565E2B0005499DD /* Entity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Entity.cpp; sourceTree = "<group>"; };
+		3CD881552565E2B0005499DD /* Level1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Level1.cpp; sourceTree = "<group>"; };
+		3CD881572565E2B1005499DD /* Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Util.h; sourceTree = "<group>"; };
+		3CD881582565E2B1005499DD /* ShaderProgram.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShaderProgram.cpp; sourceTree = "<group>"; };
+		3CD881692565E989005499DD /* Level0.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Level0.cpp; sourceTree = "<group>"; };
+		3CD8816A2565E989005499DD /* Level0.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Level0.h; sourceTree = "<group>"; };
+		3CD8816E25663516005499DD /* Level3.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Level3.cpp; sourceTree = "<group>"; };
+		3CD8816F25663516005499DD /* Level3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Level3.h; sourceTree = "<group>"; };
 		DBDF1B4F2323DE3F007CECB1 /* SDLProject */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SDLProject; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBDF1B522323DE3F007CECB1 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		DBDF1B622323DEDA007CECB1 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -88,7 +111,25 @@
 				3CD881412565E0EA005499DD /* shaders */,
 				3CD881362565E0BE005499DD /* glm */,
 				3CD87FA72565DDE7005499DD /* Assets */,
-				3CD87FAE2565DFA1005499DD /* Library */,
+				3CD881542565E2B0005499DD /* Entity.cpp */,
+				3CD881492565E2B0005499DD /* Entity.h */,
+				3CD881692565E989005499DD /* Level0.cpp */,
+				3CD8816A2565E989005499DD /* Level0.h */,
+				3CD881552565E2B0005499DD /* Level1.cpp */,
+				3CD8814D2565E2B0005499DD /* Level1.h */,
+				3CD881512565E2B0005499DD /* Level2.cpp */,
+				3CD881502565E2B0005499DD /* Level2.h */,
+				3CD8816E25663516005499DD /* Level3.cpp */,
+				3CD8816F25663516005499DD /* Level3.h */,
+				3CD8814F2565E2B0005499DD /* Map.cpp */,
+				3CD881532565E2B0005499DD /* Map.h */,
+				3CD8814E2565E2B0005499DD /* Scene.cpp */,
+				3CD8814A2565E2B0005499DD /* Scene.h */,
+				3CD881582565E2B1005499DD /* ShaderProgram.cpp */,
+				3CD8814B2565E2B0005499DD /* ShaderProgram.h */,
+				3CD881522565E2B0005499DD /* stb_image.h */,
+				3CD8814C2565E2B0005499DD /* Util.cpp */,
+				3CD881572565E2B1005499DD /* Util.h */,
 				DBDF1B522323DE3F007CECB1 /* main.cpp */,
 			);
 			path = SDLProject;
@@ -162,6 +203,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3CD8815A2565E2B1005499DD /* Scene.cpp in Sources */,
+				3CD881602565E2B1005499DD /* ShaderProgram.cpp in Sources */,
+				3CD8815C2565E2B1005499DD /* Level2.cpp in Sources */,
+				3CD8815D2565E2B1005499DD /* Entity.cpp in Sources */,
+				3CD8817025663516005499DD /* Level3.cpp in Sources */,
+				3CD8815B2565E2B1005499DD /* Map.cpp in Sources */,
+				3CD8815E2565E2B1005499DD /* Level1.cpp in Sources */,
+				3CD8816B2565E989005499DD /* Level0.cpp in Sources */,
+				3CD881592565E2B1005499DD /* Util.cpp in Sources */,
 				DBDF1B532323DE3F007CECB1 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
