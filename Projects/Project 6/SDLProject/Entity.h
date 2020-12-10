@@ -8,12 +8,14 @@
 #define GL_GLEXT_PROTOTYPES 1
 #include <SDL.h>
 #include <SDL_opengl.h>
+#include <vector>
 #include "glm/mat4x4.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "ShaderProgram.h"
 #include "Map.h"
+//#include "projectile.h"
 
-enum EntityType { PLAYER, PLATFORM, ENEMY };
+enum EntityType { PLAYER, PLATFORM, ENEMY, PROJECTILE };
 
 enum AIType { WALKER, DETECTOR };
 enum AIState { IDLE, ACTIVE };
@@ -33,13 +35,12 @@ public:
     
 //    bool jump = false;
 //    float jumpPower = 0;
-    float projectileSpeed = 1;
-    float shootTimer = 0;
+
     
     float speed;
     
     GLuint textureID;
-    GLuint projectileID;
+//    GLuint projectileID;
     
     glm::mat4 modelMatrix;
     
@@ -49,7 +50,10 @@ public:
     bool collidedBottom = false;
     bool collidedLeft = false;
     bool collidedRight = false;
-    bool collided = collidedTop || collidedBottom || collidedLeft || collidedRight;
+    
+    Entity *projectile = nullptr;
+//    float projectile_speed = 5;
+    
     Entity();
     
     bool CheckCollision(Entity *other);
@@ -57,8 +61,9 @@ public:
     void CheckCollisionsY(Entity *objects, int objectCount);
     void CheckCollisionsX(Map *map);
     void CheckCollisionsY(Map *map);
+    bool collided();
 //    bool DetectGap(float deltaTime, Map *map);
-    void Update(float deltaTime, Entity *player, Entity *objects, int objectCount, Map *map, int scene);
+    void Update(float deltaTime, Entity *player, Entity *entities, int entityCount, Map *map, int scene);
     void Render(ShaderProgram *program);
 
     

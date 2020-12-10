@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #endif
 #define GL_GLEXT_PROTOTYPES 1
+#include <vector>
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include "glm/mat4x4.hpp"
@@ -12,6 +13,7 @@
 #include "Util.h"
 #include "Entity.h"
 #include "Map.h"
+
 
 enum GameControl {NOT_STARTED, IN_PROGRESS, GAME_WON, GAME_LOST };
 

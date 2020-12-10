@@ -104,10 +104,19 @@ void ProcessInput() {
                 switch (event.key.keysym.sym) {
                     case SDLK_SPACE:
                         if (currentScene->state.control == IN_PROGRESS) {
-//                            if (currentScene->state.player->collidedBottom) {
-//                                currentScene->state.player->jump = true;
+                            if (!currentScene->state.player->projectile->isActive) {
+//                                currentScene->state.player->projectile = new Entity();
+//                                currentScene->state.player->projectile->entityType = PROJECTILE;
+                                currentScene->state.player->projectile->isActive = true;
+//                                currentScene->state.player->projectile->position = currentScene->state.player->position;
+                                currentScene->state.player->projectile->position = currentScene->state.player->position;
+                                currentScene->state.player->projectile->speed = 5.0f;
+                                currentScene->state.player->projectile->movement.x = currentScene->state.player->projectile->speed;
+//                                currentScene->state.player->projectile->textureID = Util::LoadTexture("Assets/Textures/projectile.png");
+//                                currentScene->state.player->projectile->height = 0.8f;
+//                                currentScene->state.player->projectile->width = 0.8f;
 //                                Mix_PlayChannel(-1, jumpSound, 0);
-//                            }
+                            }
                             break;
                         }
                     case SDLK_RETURN:

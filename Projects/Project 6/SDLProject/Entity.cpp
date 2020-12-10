@@ -57,8 +57,30 @@ void Entity::CheckCollisionsX(Entity *objects, int objectCount) {
                     movement.x = 0;
                     collidedLeft = true;
                 }
-                if (entityType == PLAYER && object->entityType == ENEMY)
                 isActive = false;
+                object->isActive = false;
+//                if (entityType == PLAYER && object->entityType == ENEMY)
+//                isActive = false;
+            }
+        }
+        object = objects[i].projectile;
+        if (this != object) {
+            if (CheckCollision(object)) {
+                float xdist = fabs(position.x - object->position.x);
+                float penetrationX = fabs(xdist - (height / 2.0f) - object->height / 2.0f);
+                if (movement.x > 0) {
+                    position.x -= penetrationX;
+                    movement.x = 0;
+                    collidedRight = true;
+                } else if (movement.x < 0) {
+                    position.x += penetrationX;
+                    movement.x = 0;
+                    collidedLeft = true;
+                }
+                isActive = false;
+                object->isActive = false;
+//                if (entityType == PLAYER && object->entityType == ENEMY)
+//                    object->isActive = false;
             }
         }
     }
@@ -125,11 +147,38 @@ void Entity::CheckCollisionsY(Entity *objects, int objectCount) {
                     movement.y = 0;
                     collidedBottom = true;
                 }
-                if (entityType == PLAYER && object->entityType == ENEMY)
-                    object->isActive = false;
+                isActive = false;
+                object->isActive = false;
+    //                if (entityType == PLAYER && object->entityType == ENEMY)
+    //                    object->isActive = false;
+            }
+        }
+        
+        object = objects[i].projectile;
+        if (this != object) {
+            if (CheckCollision(object)) {
+                float ydist = fabs(position.y - object->position.y);
+                float penetrationY = fabs(ydist - (height / 2.0f) - object->height / 2.0f);
+                if (movement.y > 0) {
+                    position.y -= penetrationY;
+                    movement.y = 0;
+                    collidedTop = true;
+                } else if (movement.y < 0) {
+                    position.y += penetrationY;
+                    movement.y = 0;
+                    collidedBottom = true;
+                }
+                isActive = false;
+                object->isActive = false;
+    //                if (entityType == PLAYER && object->entityType == ENEMY)
+    //                    object->isActive = false;
             }
         }
     }
+}
+
+bool Entity::collided() {
+    return collidedBottom || collidedTop || collidedLeft || collidedRight;
 }
 
 //bool Entity::DetectGap(float deltaTime, Map *map) {
@@ -181,8 +230,7 @@ void Entity::AI(Entity *player) {
     }
 }
 
-void Entity::Update(float deltaTime, Entity *player, Entity *objects, int objectCount, Map *map, int scene)
-{
+void Entity::Update(float deltaTime, Entity *player, Entity *entities, int entityCount, Map *map, int scene) {
     if (!isActive) return;
     
     collidedTop = false;
@@ -191,7 +239,7 @@ void Entity::Update(float deltaTime, Entity *player, Entity *objects, int object
     collidedRight = false;
     
     if (entityType == ENEMY) {
-        AI(player);
+//        AI(player);
 //        if (DetectGap(deltaTime, map)) {
 //            if (scene == 2 || scene == 3)
 //                movement.x *= -1;
@@ -202,12 +250,21 @@ void Entity::Update(float deltaTime, Entity *player, Entity *objects, int object
     
     position.x += movement.x * deltaTime; // Move on X
     CheckCollisionsX(map);
-    CheckCollisionsX(objects, objectCount); // Fix if needed
-    
+    CheckCollisionsX(entities, entityCount); // Fix if needed
+//    for (int i = 0; i < entityCount; ++i) {
+//        if (entities[i].projectile->isActive)
+//            CheckCollisionsX(entities[i].projectile, 1);
+//    }
     position.y +=  movement.y * deltaTime; // Move on Y
     CheckCollisionsY(map);
-    CheckCollisionsY(objects, objectCount); // Fix if needed
+    CheckCollisionsY(entities, entityCount); // Fix if needed
+//    for (int i = 0; i < entityCount; ++i) {
+//        if (entities[i].projectile->isActive)
+//            CheckCollisionsY(entities->projectile, 1);
+//    }
     
+    if (collided())
+        player->isActive = false;
     
     modelMatrix = glm::mat4(1.0f);
     modelMatrix = glm::translate(modelMatrix, position);

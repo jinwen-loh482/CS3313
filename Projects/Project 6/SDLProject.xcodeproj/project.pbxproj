@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C4EFC772582B7D50055C6C4 /* projectile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C4EFC752582B7D50055C6C4 /* projectile.cpp */; };
 		3CD87FA82565DDE7005499DD /* Assets in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3CD87FA72565DDE7005499DD /* Assets */; };
 		3CD881422565E0EA005499DD /* shaders in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3CD881412565E0EA005499DD /* shaders */; };
 		3CD881592565E2B1005499DD /* Util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CD8814C2565E2B0005499DD /* Util.cpp */; };
@@ -41,6 +42,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3C4EFC752582B7D50055C6C4 /* projectile.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = projectile.cpp; sourceTree = "<group>"; };
+		3C4EFC762582B7D50055C6C4 /* projectile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = projectile.h; sourceTree = "<group>"; };
 		3CD87FA72565DDE7005499DD /* Assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Assets; sourceTree = "<group>"; };
 		3CD881362565E0BE005499DD /* glm */ = {isa = PBXFileReference; lastKnownFileType = folder; path = glm; sourceTree = "<group>"; };
 		3CD881412565E0EA005499DD /* shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; path = shaders; sourceTree = "<group>"; };
@@ -113,6 +116,8 @@
 				3CD87FA72565DDE7005499DD /* Assets */,
 				3CD881542565E2B0005499DD /* Entity.cpp */,
 				3CD881492565E2B0005499DD /* Entity.h */,
+				3C4EFC752582B7D50055C6C4 /* projectile.cpp */,
+				3C4EFC762582B7D50055C6C4 /* projectile.h */,
 				3CD881692565E989005499DD /* Level0.cpp */,
 				3CD8816A2565E989005499DD /* Level0.h */,
 				3CD881552565E2B0005499DD /* Level1.cpp */,
@@ -205,6 +210,7 @@
 			files = (
 				3CD8815A2565E2B1005499DD /* Scene.cpp in Sources */,
 				3CD881602565E2B1005499DD /* ShaderProgram.cpp in Sources */,
+				3C4EFC772582B7D50055C6C4 /* projectile.cpp in Sources */,
 				3CD8815C2565E2B1005499DD /* Level2.cpp in Sources */,
 				3CD8815D2565E2B1005499DD /* Entity.cpp in Sources */,
 				3CD8817025663516005499DD /* Level3.cpp in Sources */,

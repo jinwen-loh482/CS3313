@@ -63,10 +63,10 @@ void Level3::Initialize(int lives) {
 }
 void Level3::Update(float deltaTime) {
     if (state.control == IN_PROGRESS) {
-        state.player->Update(deltaTime, state.player, state.enemies, Level3_ENEMY_COUNT, state.map, state.sceneNumber);
+//        state.player->Update(deltaTime, state.player, state.enemies, Level3_ENEMY_COUNT, state.map, state.sceneNumber);
         for (int i = 0; i < Level3_ENEMY_COUNT; ++i) {
             Entity* enemy = &state.enemies[i];
-            enemy->Update(deltaTime, state.player, state.enemies, Level3_ENEMY_COUNT, state.map, state.sceneNumber);
+//            enemy->Update(deltaTime, state.player, state.enemies, Level3_ENEMY_COUNT, state.map, state.sceneNumber);
         }
 
         if (state.player->position.y <= -9)
