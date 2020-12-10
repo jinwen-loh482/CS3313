@@ -132,52 +132,52 @@ void Entity::CheckCollisionsY(Entity *objects, int objectCount) {
     }
 }
 
-bool Entity::DetectGap(float deltaTime, Map *map) {
-    Entity ghost = *this;
-    ghost.movement += deltaTime * ghost.acceleration;
-    
-    if (ghost.movement.x > 0)
-        ghost.position.x += deltaTime * ghost.movement.x + ghost.width;
-    else if (ghost.movement.x < 0)
-        ghost.position.x += deltaTime * ghost.movement.x - ghost.width;
-    ghost.CheckCollisionsX(map);
-    
-    ghost.position.y += deltaTime * ghost.movement.y;
-    ghost.CheckCollisionsY(map);
-    
-    return !(ghost.collidedBottom);
-}
+//bool Entity::DetectGap(float deltaTime, Map *map) {
+//    Entity ghost = *this;
+//    ghost.movement += deltaTime * ghost.acceleration;
+//    
+//    if (ghost.movement.x > 0)
+//        ghost.position.x += deltaTime * ghost.movement.x + ghost.width;
+//    else if (ghost.movement.x < 0)
+//        ghost.position.x += deltaTime * ghost.movement.x - ghost.width;
+//    ghost.CheckCollisionsX(map);
+//    
+//    ghost.position.y += deltaTime * ghost.movement.y;
+//    ghost.CheckCollisionsY(map);
+//    
+//    return !(ghost.collidedBottom);
+//}
 
-void Entity::AIWalker() {
-    if (movement == glm::vec3(0))
-        movement = glm::vec3(-1, 0, 0);
-}
-
-void Entity::Detector(Entity *player) {
-    switch(aiState) {
-        case IDLE:
-            if ((glm::distance(position, player->position) < 3)) {
-                aiState = ACTIVE;
-            } break;
-        case ACTIVE:
-            if (glm::length(movement) == 0) {
-                if (player->position.x > position.x)
-                    movement = glm::vec3(1, 0, 0);
-                else
-                    movement = glm::vec3(-1, 0, 0);
-            }
-            break;
-    }
-}
+//void Entity::AIWalker() {
+//    if (movement == glm::vec3(0))
+//        movement = glm::vec3(-1, 0, 0);
+//}
+//
+//void Entity::Detector(Entity *player) {
+//    switch(aiState) {
+//        case IDLE:
+//            if ((glm::distance(position, player->position) < 3)) {
+//                aiState = ACTIVE;
+//            } break;
+//        case ACTIVE:
+//            if (glm::length(movement) == 0) {
+//                if (player->position.x > position.x)
+//                    movement = glm::vec3(1, 0, 0);
+//                else
+//                    movement = glm::vec3(-1, 0, 0);
+//            }
+//            break;
+//    }
+//}
 
 void Entity::AI(Entity *player) {
     switch(aiType) {
-        case WALKER:
-            AIWalker();
-            break;
-        case DETECTOR:
-            Detector(player);
-            break;
+//        case WALKER:
+//            AIWalker();
+//            break;
+//        case DETECTOR:
+//            Detector(player);
+//            break;
     }
 }
 
@@ -192,10 +192,10 @@ void Entity::Update(float deltaTime, Entity *player, Entity *objects, int object
     
     if (entityType == ENEMY) {
         AI(player);
-        if (DetectGap(deltaTime, map)) {
-            if (scene == 2 || scene == 3)
-                movement.x *= -1;
-        }
+//        if (DetectGap(deltaTime, map)) {
+//            if (scene == 2 || scene == 3)
+//                movement.x *= -1;
+//        }
     }
     
     movement += acceleration * deltaTime;

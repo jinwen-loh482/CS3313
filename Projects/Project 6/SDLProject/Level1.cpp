@@ -29,21 +29,15 @@ void Level1::Initialize(int lives) {
     state.map = new Map(LEVEL1_WIDTH, LEVEL1_HEIGHT, level1_data, mapTextureID, 1.0f, 20, 20);
     // Move over all of the player and enemy code from initialization.
     // Initialize Player
-//    state.player = new Entity();
-//    state.player->entityType = PLAYER;
-//    state.player->position = glm::vec3(5, -5, 0);
-//    state.player->movement = glm::vec3(0);
-//    state.player->acceleration = glm::vec3(0, 0, 0);
-//    state.player->speed = 3.0f;
-//    state.player->textureID = Util::LoadTexture("Assets/Textures/george_0.png");
-
-
-
-    
-//    state.player->height = 0.8f;
-//    state.player->width = 0.8f;
-    
-//    state.player->jumpPower = 6.0f;
+    state.player = new Entity();
+    state.player->entityType = PLAYER;
+    state.player->position = glm::vec3(5, -5, 0);
+    state.player->movement = glm::vec3(1, 0, 0);
+    state.player->acceleration = glm::vec3(0, 0, 0);
+    state.player->speed = 3.0f;
+    state.player->textureID = Util::LoadTexture("Assets/Textures/player.png");
+    state.player->height = 0.8f;
+    state.player->width = 0.8f;
     
     
 //    state.enemies = new Entity[LEVEL1_ENEMY_COUNT];
@@ -60,52 +54,53 @@ void Level1::Initialize(int lives) {
 }
 void Level1::Update(float deltaTime) {
     if (state.control == IN_PROGRESS) {
-//        state.player->Update(deltaTime, state.player, state.enemies, LEVEL1_ENEMY_COUNT, state.map, state.sceneNumber);
+        state.player->Update(deltaTime, state.player, state.enemies, LEVEL1_ENEMY_COUNT, state.map, state.sceneNumber);
         for (int i = 0; i < LEVEL1_ENEMY_COUNT; ++i) {
 //            Entity* enemy = &state.enemies[i];
 //            enemy->Update(deltaTime, state.player, state.enemies, LEVEL1_ENEMY_COUNT, state.map, state.sceneNumber);
         }
 
-//        if (state.player->position.y >= 4) {
-//            state.control = GAME_WON;
-////            state.nextScene = 2;
-//            return;
-//        }
-//        if (!state.player->isActive) {
-//            state.control = GAME_LOST;
-//            if (state.livesLeft > 0) {
-//                state.livesLeft--;
-//                state.control = IN_PROGRESS;
-//                Initialize(state.livesLeft);
-//            }
-//        }
+        if (state.player->position.y >= 0) {
+            state.control = GAME_WON;
+//            state.nextScene = 2;
+            state.nextScene = -1;
+            return;
+        }
+        if (!state.player->isActive) {
+            state.control = GAME_LOST;
+            if (state.livesLeft > 0) {
+                state.livesLeft--;
+                state.control = IN_PROGRESS;
+                Initialize(state.livesLeft);
+            }
+        }
     }
 }
 void Level1::Render(ShaderProgram *program) {
     state.map->Render(program);
-//    state.player->Render(program);
+    state.player->Render(program);
 //    for (int i = 0; i < LEVEL1_ENEMY_COUNT; ++i) {
 //        Entity* enemy = &state.enemies[i];
 //        enemy->Render(program);
 //    }
-//    glm::vec3 text_loc = state.player->position;
-//    text_loc.x -= .75;
-//    text_loc.y += .75;
-//    glm::vec3 announce_loc = text_loc;
-//    announce_loc.y += 1.5;
-//    switch(state.livesLeft) {
-//        case 2:
-//            Util::DrawText(program, fontTextureID, "Lives Left: 2", 0.25f, -.1, text_loc);
-//            break;
-//        case 1:
-//            Util::DrawText(program, fontTextureID, "Lives Left: 1", 0.25f, -.1, text_loc);
-//            break;
-//        case 0:
-//            Util::DrawText(program, fontTextureID, "Lives Left: 0", 0.25f, -.1, text_loc);
-//            break;
-//    }
-//    if (state.control == GAME_LOST)
-//        Util::DrawText(program, fontTextureID, "You Lose!", 0.25f, -.1, announce_loc);
-//    else if (state.control == GAME_WON)
-//        Util::DrawText(program, fontTextureID, "You Win!", 0.25f, -.1, announce_loc);
+    glm::vec3 text_loc = state.player->position;
+    text_loc.x -= .75;
+    text_loc.y += .75;
+    glm::vec3 announce_loc = text_loc;
+    announce_loc.y += 1.5;
+    switch(state.livesLeft) {
+        case 2:
+            Util::DrawText(program, fontTextureID, "Lives Left: 2", 0.25f, -.1, text_loc);
+            break;
+        case 1:
+            Util::DrawText(program, fontTextureID, "Lives Left: 1", 0.25f, -.1, text_loc);
+            break;
+        case 0:
+            Util::DrawText(program, fontTextureID, "Lives Left: 0", 0.25f, -.1, text_loc);
+            break;
+    }
+    if (state.control == GAME_LOST)
+        Util::DrawText(program, fontTextureID, "You Lose!", 0.25f, -.1, announce_loc);
+    else if (state.control == GAME_WON)
+        Util::DrawText(program, fontTextureID, "You Win!", 0.25f, -.1, announce_loc);
 }

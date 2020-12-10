@@ -49,7 +49,7 @@ public:
     bool collidedBottom = false;
     bool collidedLeft = false;
     bool collidedRight = false;
-    
+    bool collided = collidedTop || collidedBottom || collidedLeft || collidedRight;
     Entity();
     
     bool CheckCollision(Entity *other);
@@ -57,12 +57,12 @@ public:
     void CheckCollisionsY(Entity *objects, int objectCount);
     void CheckCollisionsX(Map *map);
     void CheckCollisionsY(Map *map);
-    bool DetectGap(float deltaTime, Map *map);
+//    bool DetectGap(float deltaTime, Map *map);
     void Update(float deltaTime, Entity *player, Entity *objects, int objectCount, Map *map, int scene);
     void Render(ShaderProgram *program);
 
     
     void AI(Entity *player);
-    void AIWalker();
-    void Detector(Entity *player);
+//    void AIWalker();
+//    void Detector(Entity *player);
 };

@@ -77,7 +77,7 @@ void Initialize() {
     
     glUseProgram(program.programID);
     
-    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_BLEND);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -91,7 +91,7 @@ void Initialize() {
 }
 
 void ProcessInput() {
-//    currentScene->state.player->movement = glm::vec3(0);
+    currentScene->state.player->movement.y = 0;
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
@@ -106,7 +106,7 @@ void ProcessInput() {
                         if (currentScene->state.control == IN_PROGRESS) {
 //                            if (currentScene->state.player->collidedBottom) {
 //                                currentScene->state.player->jump = true;
-////                                Mix_PlayChannel(-1, jumpSound, 0);
+//                                Mix_PlayChannel(-1, jumpSound, 0);
 //                            }
                             break;
                         }
@@ -114,6 +114,12 @@ void ProcessInput() {
                         if (currentScene->state.sceneNumber == 0)
                             currentScene->state.control = IN_PROGRESS;
                             break;
+//                    case SDLK_a:
+//                        currentScene->state.player->movement.y = 1.0f * currentScene->state.player->speed;
+//                        break;
+//                    case SDLK_d:
+//                        currentScene->state.player->movement.y = -1.0f * currentScene->state.player->speed;
+//                        break;
                 }
                 break; // SDL_KEYDOWN
         }
@@ -122,16 +128,14 @@ void ProcessInput() {
     if (currentScene->state.control == IN_PROGRESS) {
         const Uint8 *keys = SDL_GetKeyboardState(NULL);
 
-//        if (keys[SDL_SCANCODE_LEFT]) {
-//            currentScene->state.player->movement.x = -1.0f;
-//            currentScene->state.player->animIndices = currentScene->state.player->animLeft;
-//        }
-//        else if (keys[SDL_SCANCODE_RIGHT]) {
-//            currentScene->state.player->movement.x = 1.0f;
-//            currentScene->state.player->animIndices = currentScene->state.player->animRight;
-//        }
-//
-//
+        if (keys[SDL_SCANCODE_D]) {
+            currentScene->state.player->movement.y = -1.0f * currentScene->state.player->speed;
+        }
+        else if (keys[SDL_SCANCODE_A]) {
+            currentScene->state.player->movement.y = 1.0f * currentScene->state.player->speed;
+        }
+
+
 //        if (glm::length(currentScene->state.player->movement) > 1.0f) {
 //            currentScene->state.player->movement = glm::normalize(currentScene->state.player->movement);
 //        }
@@ -162,12 +166,12 @@ void Update() {
     
     viewMatrix = glm::mat4(1.0f);
     if (currentScene->state.sceneNumber != 0) {
-//        if (currentScene->state.player->position.x > 5) {
-//            viewMatrix = glm::translate(viewMatrix,glm::vec3(-currentScene->state.player->position.x, 3.50, 0));
-//        } else {
+        if (currentScene->state.player->position.x > 5) {
+            viewMatrix = glm::translate(viewMatrix,glm::vec3(-currentScene->state.player->position.x, 3.50, 0));
+        } else {
 //            viewMatrix = glm::translate(viewMatrix, glm::vec3(-5, 3.75, 0));
-        viewMatrix = glm::translate(viewMatrix, glm::vec3(-5, 3.50, 0));
-//        }
+            viewMatrix = glm::translate(viewMatrix, glm::vec3(-5, 3.50, 0));
+        }
     }
 }
 
