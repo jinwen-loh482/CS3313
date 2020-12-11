@@ -17,7 +17,7 @@
 
 enum EntityType { PLAYER, PLATFORM, ENEMY, PROJECTILE };
 
-enum AIType { WALKER, DETECTOR };
+enum AIType { SHOOTER, DETECTOR, OSCILLATOR, GUIDED };
 enum AIState { IDLE, ACTIVE };
 
 
@@ -69,5 +69,8 @@ public:
     
     void AI(Entity *player);
 //    void AIWalker();
-//    void Detector(Entity *player);
+    void Detector(Entity *player);
+    void Shooter(Entity *player);
+    void Guided(Entity *player);
+    void Oscillator();
 };

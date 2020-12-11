@@ -1,26 +1,48 @@
 #include "Level1.h"
-#define LEVEL1_WIDTH 19
+#define LEVEL1_WIDTH 35
 #define LEVEL1_HEIGHT 8
 
-#define LEVEL1_ENEMY_COUNT 1
+#define LEVEL1_ENEMY_COUNT 2
 
 #define WALL 10
 
+/*
+ 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+ 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+ 
+ 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+ 10,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+ 10,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+ 10,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+ 10,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+ 10,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+ 10,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+ 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+ */
+
 unsigned int level1_data[] =
 {
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10,     10, 10, 10, 10, 10, 10, 10, 10, 10,
-    10,  0,  0,  0,  0,  0,  0,  0,  0,  0,     0,  0,  0,  0,  0,  0,  0,  0,  0,
-    10,  0,  0,  0,  0,  0,  0,  0,  0,  0,     0,  0,  0,  0,  0,  0,  0,  0,  0,
-    10,  0,  0,  0,  0,  0,  0,  0,  0,  0,     0,  0,  0,  0,  0,  0,  0,  0,  0,
-    10,  0,  0,  0,  0,  0,  0,  0,  0,  0,     0,  0,  0,  0,  0,  0,  0,  0,  0,
-    10,  0,  0,  0,  0,  0,  0,  0,  0,  0,     0,  0,  0,  0,  0,  0,  0,  0,  0,
-    10,  0,  0,  0,  0,  0,  0,  0,  0,  0,     0,  0,  0,  0,  0,  0,  0,  0,  0,
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10,     10, 10, 10, 10, 10, 10, 10, 10, 10
+
+    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+    10,  0,  0,  0,  0,  0,  0,  0,  0, 0, 0,  0,  0,  0,  0,  0,  0,  0,  10, 0, 0,  0,  0,  10,  0,  0,  0,  0,  0,  10, 0,  0,  0,  0,  0,
+    10,  0,  0,  0,  0,  0,  0,  0,  0,  0,0,  0,  0,  0,  0,  0,  0,  0,  10, 0, 0,  0,  0,  10,  0,  0,  0,  0,  0,  10, 0,  0,  0,  0,  0,
+    10,  0,  0,  0,  0,  0,  0,  0,  0,  0,0, 10,  0,  0,  0,  0,  0,  0,  10, 0,0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+    10,  0,  0,  0,  0,  0,  0,  0,  0,  0,0, 10,  0,  0,  0,  0,  0,  0,  10, 0, 0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,  0,  0,  0,  0,
+    10,  0,  0,  0,  0,  0,  0,  0,  0,  0,0, 10,  0,  0,  0,  0,  0,  0,  0,  0,0,  0,  0,  10,  0,  0,  0,  0,  0,  10,0,  0,  0,  0,  0,
+    10,  0,  0,  0,  0,  0,  0,  0,  0,  0,0, 10,  0,  0,  0,  0,  0,  0,  0,  0,0,  0,  0,  10,  0,  0,  0,  0,  0,  10,0,  0,  0,  0,  0,
+    10, 10, 10, 10, 10, 10, 10, 10, 10, 10,10, 10, 10, 10, 10, 10, 10, 10, 10, 10,10, 10, 10, 10, 10, 10, 10, 10, 10, 10,   10, 10, 10, 10, 10
 
 };
 
 void Level1::Initialize(int lives) {
     state.livesLeft = lives;
+    state.shotsLeft = 5;
     state.sceneNumber = 1;
     state.nextScene = -1;
     state.control = IN_PROGRESS;
@@ -32,7 +54,7 @@ void Level1::Initialize(int lives) {
     state.player = new Entity();
     state.player->entityType = PLAYER;
     state.player->position = glm::vec3(5, -5, 0);
-    state.player->movement = glm::vec3(0, 0, 0);
+    state.player->movement = glm::vec3(1.2, 0, 0);
     state.player->acceleration = glm::vec3(0, 0, 0);
     state.player->speed = 3.0f;
     state.player->textureID = Util::LoadTexture("Assets/Textures/player.png");
@@ -54,19 +76,36 @@ void Level1::Initialize(int lives) {
 //
     state.enemies[0].entityType = ENEMY;
     state.enemies[0].textureID = enemyTextureID;
-    state.enemies[0].position = glm::vec3(10, -5, 0);
+    state.enemies[0].position = glm::vec3(24, -3.5, 0);
     state.enemies[0].speed = 1;
-//    state.enemies[0].aiType = WALKER;
-//    state.enemies[0].aiState = ACTIVE;
+    state.enemies[0].aiType = DETECTOR;
+    state.enemies[0].aiState = IDLE;
     state.enemies[0].isActive = true;
     state.enemies[0].projectile = new Entity();
     state.enemies[0].projectile->entityType = PROJECTILE;
-    state.enemies[0].projectile->isActive = true;
-    state.enemies[0].projectile->position = state.enemies[0].position;
-    state.enemies[0].projectile->movement = glm::vec3(-1, 0, 0);
+    state.enemies[0].projectile->isActive = false;
+    state.enemies[0].projectile->position = state.enemies[0].position-glm::vec3(1,0,0);
+//    state.enemies[0].projectile->movement = glm::vec3(-1, 0, 0);
     state.enemies[0].projectile->textureID = Util::LoadTexture("Assets/Textures/projectile.png");
     state.enemies[0].projectile->width = 0.8f;
     state.enemies[0].projectile->height = 0.8f;
+    
+    state.enemies[1].entityType = ENEMY;
+    state.enemies[1].textureID = enemyTextureID;
+    state.enemies[1].position = glm::vec3(31, -3.5, 0);
+    state.enemies[1].speed = 1;
+    state.enemies[1].aiType = SHOOTER;
+    state.enemies[1].aiState = IDLE;
+    state.enemies[1].isActive = true;
+    state.enemies[1].projectile = new Entity();
+    state.enemies[1].projectile->entityType = PROJECTILE;
+    state.enemies[1].projectile->isActive = false;
+    state.enemies[1].projectile->movement = glm::vec3(-3, 0, 0);
+//    state.enemies[1].projectile->position = state.enemies[1].position-glm::vec3(1,0,0);
+//    state.enemies[1].projectile->movement = glm::vec3(-2, 0, 0);
+    state.enemies[1].projectile->textureID = Util::LoadTexture("Assets/Textures/projectile.png");
+    state.enemies[1].projectile->width = 0.8f;
+    state.enemies[1].projectile->height = 0.8f;
     
 }
 void Level1::Update(float deltaTime) {
@@ -83,10 +122,10 @@ void Level1::Update(float deltaTime) {
             Entity* enemy = &state.enemies[i];
             enemy->projectile->Update(deltaTime, enemy->projectile, state.player, 1, state.map, state.sceneNumber);
         }
-        if (state.player->position.y > -4) {
-            state.control = GAME_WON;
-//            state.nextScene = 2;
-            state.nextScene = -1;
+        if (state.player->position.x > 35) {
+//            state.control = GAME_WON;
+            state.nextScene = 2;
+//            state.nextScene = -1;
             return;
         }
         if (!state.player->isActive) {
@@ -103,6 +142,16 @@ void Level1::Render(ShaderProgram *program) {
     state.map->Render(program);
     state.player->Render(program);
     state.player->projectile->Render(program);
+    
+    glm::vec3 tutorial_up_loc = glm::vec3(6, -3.5, 0);
+    glm::vec3 tutorial_down_loc = glm::vec3(13, -3.5, 0);
+    glm::vec3 tutorial_shoot_loc = glm::vec3(19,-3.5, 0);
+    glm::vec3 tutorial_counter_loc = glm::vec3(24, -3.5, 0);
+    
+    Util::DrawText(program, fontTextureID, "Use A to move up", 0.25f, -.1, tutorial_up_loc);
+    Util::DrawText(program, fontTextureID, "Use D to move down", 0.25f, -.1, tutorial_down_loc);
+    Util::DrawText(program, fontTextureID, "Use SPACE to shoot", 0.25f, -.1, tutorial_shoot_loc);
+    Util::DrawText(program, fontTextureID, "You can shoot enemy projectiles", 0.25f, -.1, tutorial_counter_loc);
     
     for (int i = 0; i < LEVEL1_ENEMY_COUNT; ++i) {
         Entity* enemy = &state.enemies[i];
@@ -123,6 +172,27 @@ void Level1::Render(ShaderProgram *program) {
             break;
         case 0:
             Util::DrawText(program, fontTextureID, "Lives Left: 0", 0.25f, -.1, text_loc);
+            break;
+    }
+    text_loc.y += .35;
+    switch(state.shotsLeft) {
+        case 5:
+            Util::DrawText(program, fontTextureID, "Shots Left: 5", 0.25f, -.1, text_loc);
+            break;
+        case 4:
+            Util::DrawText(program, fontTextureID, "Shots Left: 4", 0.25f, -.1, text_loc);
+            break;
+        case 3:
+            Util::DrawText(program, fontTextureID, "Shots Left: 3", 0.25f, -.1, text_loc);
+            break;
+        case 2:
+            Util::DrawText(program, fontTextureID, "Shots Left: 2", 0.25f, -.1, text_loc);
+            break;
+        case 1:
+            Util::DrawText(program, fontTextureID, "Shots Left: 1", 0.25f, -.1, text_loc);
+            break;
+        case 0:
+            Util::DrawText(program, fontTextureID, "Shots Left: 0", 0.25f, -.1, text_loc);
             break;
     }
     if (state.control == GAME_LOST)

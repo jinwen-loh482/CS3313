@@ -24,6 +24,7 @@ struct GameState {
     int nextScene;
     int sceneNumber;
     int livesLeft;
+    int shotsLeft;
     GameControl control = NOT_STARTED;
 };
 

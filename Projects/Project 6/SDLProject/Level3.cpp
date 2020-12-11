@@ -1,80 +1,115 @@
 #include "Level3.h"
-#define Level3_WIDTH 30
-#define Level3_HEIGHT 9
+#define LEVEL3_WIDTH 30
+#define LEVEL3_HEIGHT 8
 
-#define Level3_ENEMY_COUNT 2
+#define LEVEL3_ENEMY_COUNT 1
 
-unsigned int Level3_data[] =
+#define WALL 10
+
+/*
+ 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+ 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+ 
+ 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+ 10,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+ 10,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+ 10,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+ 10,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+ 10,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+ 10,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+ 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+ */
+
+unsigned int level3_data[] =
 {
-    3, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 3,
-    3, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 3,
-    3, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 3,
-    3, 0, 0, 0, 0, 0, 0, 1, 1, 3,   3, 3, 1, 1, 1, 1, 1, 1, 1, 1,   1, 1, 0, 0, 0, 0, 0, 0, 0, 3,
-    3, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 3,
-    3, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 1, 1, 0, 0, 0, 0, 3,
-    3, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 3,
-    3, 1, 1, 1, 1, 1, 1, 1, 1, 1,   1, 1, 0, 0, 1, 1, 1, 1, 1, 0,   0, 1, 1, 1, 1, 1, 1, 1, 1, 3,
-    3, 2, 2, 2, 2, 2, 2, 2, 2, 2,   2, 2, 0, 0, 2, 2, 2, 2, 2, 0,   0, 2, 2, 2, 2, 2, 2, 2, 2, 3
+
+    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,  10,  10, 10,  10, 10, 10, 10, 10, 10, 10,
+    10,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,  0,  10,  0,  0,  0,  0,  0,  0,  0,   0,  10, 10,  10,  0,  0,  0,  0,  0,  0,
+    10,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,  0,  10,  0,  0,  0,  0,  0,  0,  0,   0,   0, 10,  10,  0,  0,  0,  0,  0,  0,
+    10,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,  0,  10,  0,  0,  0,  0, 10,  10, 10,  0,   0,  0,  10,  0,  0, 10,  0,  0,  0,
+    10,  0,  0,  0,  0,  0,  0,  0,  0,  10, 0,  0,  0,   0,  0,  0, 10, 10,  10, 10, 10,   0,  0,   0,  0,  0, 10,  0,  0,  0,
+    10,  0,  0,  0,  0,  0,  0,  0,  0,  10, 0,  0,  0,   0,  0, 10, 10, 10,  10, 10, 10,  10,  0,   0,  0,  0,  0,  0,  0,  0,
+    10,  0,  0,  0,  0,  0,  0,  0,  0,  10, 0,  0,  0,  10, 10, 10, 10, 10,  10, 10, 10,  10, 10,   0,  0,  0,  0,  0,  0,  0,
+    10, 10, 10, 10, 10, 10, 10, 10, 10, 10,10, 10, 10,  10, 10, 10, 10, 10,  10, 10, 10,  10, 10,  10, 10, 10, 10, 10, 10, 10
+
 };
 
 void Level3::Initialize(int lives) {
     state.livesLeft = lives;
+    state.shotsLeft = 2;
     state.sceneNumber = 3;
     state.nextScene = -1;
     state.control = IN_PROGRESS;
-    GLuint mapTextureID = Util::LoadTexture("Assets/Textures/tileset.png");
+    GLuint mapTextureID = Util::LoadTexture("Assets/Textures/monochrome_tilemap.png");
     fontTextureID = Util::LoadTexture("Assets/Textures/font1.png");
-    state.map = new Map(Level3_WIDTH, Level3_HEIGHT, Level3_data, mapTextureID, 1.0f, 4, 1);
+    state.map = new Map(LEVEL3_WIDTH, LEVEL3_HEIGHT, level3_data, mapTextureID, 1.0f, 20, 20);
     // Move over all of the player and enemy code from initialization.
     // Initialize Player
     state.player = new Entity();
     state.player->entityType = PLAYER;
-    state.player->position = glm::vec3(3, -5, 0);
-    state.player->movement = glm::vec3(0);
-    state.player->acceleration = glm::vec3(0, -9.81f, 0);
+    state.player->position = glm::vec3(5, -5, 0);
+    state.player->movement = glm::vec3(1.2, 0, 0);
+    state.player->acceleration = glm::vec3(0, 0, 0);
     state.player->speed = 3.0f;
-    state.player->textureID = Util::LoadTexture("Assets/Textures/george_0.png");
-
-    
+    state.player->textureID = Util::LoadTexture("Assets/Textures/player.png");
     state.player->height = 0.8f;
     state.player->width = 0.8f;
     
+    // Initialize projective
+    state.player->projectile = new Entity();
+    state.player->projectile->entityType = PROJECTILE;
+    state.player->projectile->isActive = false;
+//    state.player->projectile->position = glm::vec3(5, -5, 0);
+    state.player->projectile->textureID = Util::LoadTexture("Assets/Textures/projectile.png");
+    state.player->projectile->width = 0.8f;
+    state.player->projectile->height = 0.8f;
     
-    state.enemies = new Entity[Level3_ENEMY_COUNT];
-    GLuint enemyTextureID = Util::LoadTexture("Assets/Textures/ctg.png");
     
+    state.enemies = new Entity[LEVEL3_ENEMY_COUNT];
+    GLuint enemyTextureID = Util::LoadTexture("Assets/Textures/enemy.png");
+//
     state.enemies[0].entityType = ENEMY;
     state.enemies[0].textureID = enemyTextureID;
-    state.enemies[0].position = glm::vec3(16, -5, 0);
+    state.enemies[0].position = glm::vec3(30, -5.5, 0);
     state.enemies[0].speed = 1;
-    state.enemies[0].acceleration = glm::vec3(0, -9.81f, 0);
-    state.enemies[0].aiType = WALKER;
-    state.enemies[0].aiState = ACTIVE;
+    state.enemies[0].aiType = SHOOTER;
+    state.enemies[0].aiState = IDLE;
     state.enemies[0].isActive = true;
+    state.enemies[0].projectile = new Entity();
+    state.enemies[0].projectile->entityType = PROJECTILE;
+    state.enemies[0].projectile->isActive = false;
+    state.enemies[0].projectile->movement = glm::vec3(-3, 0, 0);
+//    state.enemies[1].projectile->position = state.enemies[1].position-glm::vec3(1,0,0);
+//    state.enemies[1].projectile->movement = glm::vec3(-2, 0, 0);
+    state.enemies[0].projectile->textureID = Util::LoadTexture("Assets/Textures/projectile.png");
+    state.enemies[0].projectile->width = 0.8f;
+    state.enemies[0].projectile->height = 0.8f;
     
-    state.enemies[1].entityType = ENEMY;
-    state.enemies[1].textureID = enemyTextureID;
-    state.enemies[1].position = glm::vec3(11, 0, 0);
-    state.enemies[1].speed = 1;
-    state.enemies[1].acceleration = glm::vec3(0, -9.81f, 0);
-    state.enemies[1].aiType = DETECTOR;
-    state.enemies[1].aiState = IDLE;
-    state.enemies[1].isActive = true;
 }
 void Level3::Update(float deltaTime) {
     if (state.control == IN_PROGRESS) {
-//        state.player->Update(deltaTime, state.player, state.enemies, Level3_ENEMY_COUNT, state.map, state.sceneNumber);
-        for (int i = 0; i < Level3_ENEMY_COUNT; ++i) {
+        state.player->Update(deltaTime, state.player, state.enemies, LEVEL3_ENEMY_COUNT, state.map, state.sceneNumber);
+        for (int i = 0; i < LEVEL3_ENEMY_COUNT; ++i) {
             Entity* enemy = &state.enemies[i];
-//            enemy->Update(deltaTime, state.player, state.enemies, Level3_ENEMY_COUNT, state.map, state.sceneNumber);
+            enemy->Update(deltaTime, enemy, state.player, 1, state.map, state.sceneNumber);
         }
-
-        if (state.player->position.y <= -9)
-            state.player->isActive = false;
         
-        if (state.player->position.x <= 11 && state.player->position.x >= 9
-            && state.player->position.y > -3) {
-            state.control = GAME_WON;
+        // Update player projectile
+        state.player->projectile->Update(deltaTime, state.player->projectile, state.enemies, LEVEL3_ENEMY_COUNT, state.map, state.sceneNumber);
+        for (int i = 0; i < LEVEL3_ENEMY_COUNT; ++i) {
+            Entity* enemy = &state.enemies[i];
+            enemy->projectile->Update(deltaTime, enemy->projectile, state.player, 1, state.map, state.sceneNumber);
+        }
+        if (state.player->position.x > 30) {
+//            state.control = GAME_WON;
+            state.nextScene = 4;
+//            state.nextScene = -1;
             return;
         }
         if (!state.player->isActive) {
@@ -90,9 +125,22 @@ void Level3::Update(float deltaTime) {
 void Level3::Render(ShaderProgram *program) {
     state.map->Render(program);
     state.player->Render(program);
-    for (int i = 0; i < Level3_ENEMY_COUNT; ++i) {
+    state.player->projectile->Render(program);
+    
+//    glm::vec3 reminder = glm::vec3(6, -3.5, 0);
+//    glm::vec3 reminder_1 = glm::vec3(6, -3.75, 0);
+//    glm::vec3 tutorial_shoot_loc = glm::vec3(19,-3.5, 0);
+//    glm::vec3 tutorial_counter_loc = glm::vec3(24, -3.5, 0);
+//
+//    Util::DrawText(program, fontTextureID, "You have limited shots", 0.25f, -.1, reminder);
+//    Util::DrawText(program, fontTextureID, "so choose your fights!", 0.25f, -.1, reminder_1);
+//    Util::DrawText(program, fontTextureID, "Use SPACE to shoot", 0.25f, -.1, tutorial_shoot_loc);
+//    Util::DrawText(program, fontTextureID, "You can shoot enemy projectiles", 0.25f, -.1, tutorial_counter_loc);
+    
+    for (int i = 0; i < LEVEL3_ENEMY_COUNT; ++i) {
         Entity* enemy = &state.enemies[i];
         enemy->Render(program);
+        enemy->projectile->Render(program);
     }
     glm::vec3 text_loc = state.player->position;
     text_loc.x -= .75;
@@ -110,12 +158,20 @@ void Level3::Render(ShaderProgram *program) {
             Util::DrawText(program, fontTextureID, "Lives Left: 0", 0.25f, -.1, text_loc);
             break;
     }
+    text_loc.y += .35;
+    switch(state.shotsLeft) {
+        case 2:
+            Util::DrawText(program, fontTextureID, "Shots Left: 2", 0.25f, -.1, text_loc);
+            break;
+        case 1:
+            Util::DrawText(program, fontTextureID, "Shots Left: 1", 0.25f, -.1, text_loc);
+            break;
+        case 0:
+            Util::DrawText(program, fontTextureID, "Shots Left: 0", 0.25f, -.1, text_loc);
+            break;
+    }
     if (state.control == GAME_LOST)
         Util::DrawText(program, fontTextureID, "You Lose!", 0.25f, -.1, announce_loc);
-    else if (state.control == GAME_WON) {
-        announce_loc.y -= 3;
+    else if (state.control == GAME_WON)
         Util::DrawText(program, fontTextureID, "You Win!", 0.25f, -.1, announce_loc);
-    }
 }
-
-

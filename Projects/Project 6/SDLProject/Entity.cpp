@@ -202,31 +202,80 @@ bool Entity::collided() {
 //        movement = glm::vec3(-1, 0, 0);
 //}
 //
-//void Entity::Detector(Entity *player) {
-//    switch(aiState) {
-//        case IDLE:
-//            if ((glm::distance(position, player->position) < 3)) {
-//                aiState = ACTIVE;
-//            } break;
-//        case ACTIVE:
-//            if (glm::length(movement) == 0) {
-//                if (player->position.x > position.x)
-//                    movement = glm::vec3(1, 0, 0);
-//                else
-//                    movement = glm::vec3(-1, 0, 0);
-//            }
-//            break;
-//    }
-//}
+void Entity::Detector(Entity *player) {
+    switch(aiState) {
+        case IDLE:
+            if ((glm::distance(position, player->position) < 6)) {
+                aiState = ACTIVE;
+            } break;
+        case ACTIVE:
+            if (glm::length(movement) == 0) {
+                if (player->position.x > position.x)
+                    movement = glm::vec3(1, 0, 0);
+                else
+                    movement = glm::vec3(-1, 0, 0);
+            }
+            break;
+    }
+}
+
+void Entity::Shooter(Entity *player) {
+    switch(aiState) {
+        case IDLE:
+            if ((glm::distance(position, player->position) < 6)) {
+                aiState = ACTIVE;
+            } break;
+        case ACTIVE:
+            if (glm::length(movement) == 0) {
+                projectile->isActive = true;
+//                projectile->movement = glm::vec3(-1, 0, 0);
+                projectile->position = position-glm::vec3(1,0,0);
+                if (player->position.x > position.x)
+                    movement = glm::vec3(1, 0, 0);
+                else
+                    movement = glm::vec3(-1, 0, 0);
+            }
+            break;
+    }
+}
+
+void Entity::Guided(Entity *player) {
+    switch(aiState) {
+        case IDLE:
+            if ((glm::distance(position, player->position) < 6)) {
+                aiState = ACTIVE;
+            } break;
+        case ACTIVE:
+            if (!projectile->isActive) {
+                projectile->isActive = true;
+                projectile->movement = glm::normalize(player->position);
+                projectile->movement *= 3;
+                projectile->position = position-glm::vec3(1,0,0);
+            }
+            break;
+    }
+}
+
+// Assumes initial movement = glm::vec3(1,1,0);
+void Entity::Oscillator() {
+    if (position.y > -1.5 || position.y < -4.5) {
+        movement.y *= -1;
+    }
+}
 
 void Entity::AI(Entity *player) {
     switch(aiType) {
-//        case WALKER:
-//            AIWalker();
-//            break;
-//        case DETECTOR:
-//            Detector(player);
-//            break;
+        case SHOOTER:
+            Shooter(player);
+            break;
+        case DETECTOR:
+            Detector(player);
+            break;
+        case GUIDED:
+            Guided(player);
+            break;
+        case OSCILLATOR:
+            Oscillator();
     }
 }
 
@@ -238,12 +287,13 @@ void Entity::Update(float deltaTime, Entity *player, Entity *entities, int entit
     collidedLeft = false;
     collidedRight = false;
     
+    if (projectile) {
+        if (glm::distance(projectile->position, position) > 6)
+            projectile->isActive = false;
+    }
+    
     if (entityType == ENEMY) {
-//        AI(player);
-//        if (DetectGap(deltaTime, map)) {
-//            if (scene == 2 || scene == 3)
-//                movement.x *= -1;
-//        }
+        AI(entities);
     }
     
     movement += acceleration * deltaTime;

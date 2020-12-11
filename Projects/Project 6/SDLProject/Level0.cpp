@@ -15,8 +15,9 @@ void Level0::Update(float deltaTime) {
 
 void Level0::Render(ShaderProgram *program) {
     Util::DrawText(program, fontTextureID, "Project 6", 0.5f, -.1, glm::vec3(-1.75, 1, 0));
-    Util::DrawText(program, fontTextureID, "Sidescroll shooter", .5f, -.1, glm::vec3(-3.0f, 0, 0));
-    Util::DrawText(program, fontTextureID, "Press ENTER", 0.5f, -.1, glm::vec3(-2.1, -1, 0));
+    Util::DrawText(program, fontTextureID, "Out-of-Place Michael Jackson ", .35f, -.1, glm::vec3(-3.5f, 0, 0));
+    Util::DrawText(program, fontTextureID, "Sidescroll Shooter", .35f, -.1, glm::vec3(-2.5f, -0.5, 0));
+    Util::DrawText(program, fontTextureID, "Press ENTER", 0.5f, -.1, glm::vec3(-2.1, -1.5, 0));
 }
 
 //#define LEVEL1_WIDTH 14

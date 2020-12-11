@@ -21,8 +21,9 @@
 #include "Level1.h"
 #include "Level2.h"
 #include "Level3.h"
+#include "Level4.h"
 
-#define TOTAL_SCENE 2
+#define TOTAL_SCENE 5
 
 SDL_Window* displayWindow;
 bool gameIsRunning = true;
@@ -42,8 +43,10 @@ void SwitchToScene(Scene *prev, Scene *scene) {
         currentScene->Initialize(2);
 }
 
-//Mix_Music *music;
-//Mix_Chunk *jumpSound;
+
+Mix_Music *music;
+Mix_Chunk *shootSound;
+bool wooow = true;
 
 void Initialize() {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
@@ -59,12 +62,12 @@ void Initialize() {
     
     program.Load("shaders/vertex_textured.glsl", "shaders/fragment_textured.glsl");
     
-//    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
     // For testing if the audio loops (and actually being able to hear jump sound effects)
-    // music = Mix_LoadMUS("Assets/Audio/Monkey.mp3");
-    // For the authentic MadMax Experience
-//    music = Mix_LoadMUS("Assets/Audio/Valhalla.mp3");
-//    Mix_PlayMusic(music, -1);
+//     music = Mix_LoadMUS("Assets/Audio/Monkey.mp3");
+    // Because I'm obsessed with this game at the moment
+    music = Mix_LoadMUS("Assets/Audio/frostpunk_theme.mp3");
+    Mix_PlayMusic(music, -1);
     
 //    jumpSound = Mix_LoadWAV("Assets/Audio/bounce.wav");
     
@@ -84,9 +87,11 @@ void Initialize() {
     
     
     sceneList[0] = new Level0();
+//    sceneList[1] = new Level4();
     sceneList[1] = new Level1();
-//    sceneList[2] = new Level2();
-//    sceneList[3] = new Level3();
+    sceneList[2] = new Level2();
+    sceneList[3] = new Level3();
+    sceneList[4] = new Level4();
     SwitchToScene(nullptr, sceneList[0]);
 }
 
@@ -104,18 +109,28 @@ void ProcessInput() {
                 switch (event.key.keysym.sym) {
                     case SDLK_SPACE:
                         if (currentScene->state.control == IN_PROGRESS) {
-                            if (!currentScene->state.player->projectile->isActive) {
+                            if (!currentScene->state.player->projectile->isActive && currentScene->state.shotsLeft > 0) {
 //                                currentScene->state.player->projectile = new Entity();
 //                                currentScene->state.player->projectile->entityType = PROJECTILE;
                                 currentScene->state.player->projectile->isActive = true;
 //                                currentScene->state.player->projectile->position = currentScene->state.player->position;
                                 currentScene->state.player->projectile->position = currentScene->state.player->position;
-                                currentScene->state.player->projectile->speed = 5.0f;
+                                currentScene->state.player->projectile->speed = 8.0f;
                                 currentScene->state.player->projectile->movement.x = currentScene->state.player->projectile->speed;
+                                currentScene->state.shotsLeft -= 1;
 //                                currentScene->state.player->projectile->textureID = Util::LoadTexture("Assets/Textures/projectile.png");
 //                                currentScene->state.player->projectile->height = 0.8f;
 //                                currentScene->state.player->projectile->width = 0.8f;
-//                                Mix_PlayChannel(-1, jumpSound, 0);
+                                if (wooow) {
+                                    shootSound = Mix_LoadWAV("Assets/Audio/wow_8.wav");
+                                    wooow = false;
+                                }
+                                else {
+                                    shootSound = Mix_LoadWAV("Assets/Audio/killsound.wav");
+                                    wooow = true;
+                                }
+                                    
+                                Mix_PlayChannel(-1, shootSound, 0);
                             }
                             break;
                         }
